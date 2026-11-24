@@ -142,7 +142,7 @@ class Customer(BaseEntity):
         self.purchases_count = purchases_count
         self.average_check = average_check
         self.account_id = account_id
-        self.custom_fields_values = custom_fields_values
+        self.custom_fields_values = custom_fields_values or {}
         self._embedded = _embedded
 
         self.companies = []
@@ -200,13 +200,15 @@ class Lead(BaseEntity):
         self.is_deleted = is_deleted
         self.score = score
         self.account_id = account_id
-        self.custom_fields_values = custom_fields_values
+        self.custom_fields_values = custom_fields_values or {}
         self._embedded = _embedded
         self.tags = []
         self.contacts = []
         self.companies = []
         if not _embedded:
             return
+        if _embedded.get(CONTACTS):
+            self.contacts = _embedded.get(CONTACTS)
 
 
 def amocrm_get(obj_cls: Type[BaseEntity],

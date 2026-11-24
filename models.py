@@ -84,6 +84,13 @@ class AbstractCustomer(db.Model):
     ]
     """
     __tablename__ = "abstract_customer"
+    # Для поиска другими частями системы по точному логину/названию: filter(col.op('@>')([{'general': {...}}]))
+    __table_args__ = (
+        db.Index("ix_abstract_customer_amo_customers", "amo_customers",
+                 postgresql_using="gin", postgresql_ops={"amo_customers": "jsonb_path_ops"}),
+        db.Index("ix_abstract_customer_amo_leads", "amo_leads",
+                 postgresql_using="gin", postgresql_ops={"amo_leads": "jsonb_path_ops"}),
+    )
     id = Column(db.BigInteger(), nullable=False, primary_key=True)
     amo_customers = Column(JSONB)
     amo_leads = Column(JSONB)
